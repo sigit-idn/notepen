@@ -10,17 +10,16 @@ const Login = (props) => {
   const handleChangeText = (event) =>
     setState({ ...state, [event.target.type]: event.target.value });
 
-    const history = useHistory();
+  const history = useHistory();
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const response = await props.actionLogin(state).catch(err => err);
+    const response = await props.actionLogin(state).catch((err) => err);
 
     if (response) {
-        console.log(response);
-        history.push('/');
-        setState({ email: "", password: "" });
+      console.log(response);
+      history.push("/");
+      setState({ email: "", password: "" });
     }
-
   };
 
   return (
@@ -65,7 +64,7 @@ const Login = (props) => {
 
 const globalState = (state) => ({
   popupProps: state.popup,
-  userName: state.user,
+  userName: state.user.email,
   notificationProps: state.notification,
   isLoadingProps: state.isLoading,
 });

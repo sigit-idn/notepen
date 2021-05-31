@@ -3,7 +3,7 @@ const initialState = {
     isLogin: false,
     isLoading: false,
     notification: '',
-    user: "Sigit"
+    user: {}
   };
   
   const reducer = (state = initialState, action) => {

@@ -1,30 +1,29 @@
 import { useState } from "react";
 import { Button, Card, Form } from "react-bootstrap";
-import firebase from "../../../config/firebase"
+import { connect } from "react-redux";
+import { registerUserAPI } from "../../../config/redux/action";
 
-const Register = () => {
+const Register = props => {
   const [state, setState] = useState({ email: "", password: "" });
-  const [notif, setNotif] = useState("");
 
   const handleChangeText = (event) =>
     setState({ ...state, [event.target.type]: event.target.value });
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(state.email, state.password)
-      .then((success) => console.log(success))
-      .catch((error) => setNotif(error.message));
+    const {email, password} = state;
+    props.registerAPI({email, password});
+    setState({ email: "", password: "" })
   };
 
   return (
-    <Form className="col-md-5">
+    <Form className="col-md-5" onSubmit={handleSubmit}>
       <Form.Group className="mb-3" controlId="formBasicEmail">
         <Form.Label>Email address</Form.Label>
         <Form.Control
           type="email"
           placeholder="Enter email"
+          value={state.email}
           onChange={handleChangeText}
         />
         <Form.Text className="text-muted">
@@ -37,18 +36,24 @@ const Register = () => {
         <Form.Control
           type="password"
           placeholder="Password"
+          value={state.password}
           onChange={handleChangeText}
         />
       </Form.Group>
       <Form.Group className="mb-3" controlId="formBasicCheckbox">
         <Form.Check type="checkbox" label="Check me out" />
       </Form.Group>
-      { notif && <Card body className="mt-3 mb-3" variant="primary">{notif}</Card>}
-      <Button variant="primary" type="submit" onClick={handleSubmit}>
-        Submit
+      { props.globalProps.notification && <Card body className="mt-3 mb-3" variant="primary">{props.globalProps.notification}</Card>}
+      <Button variant="primary" type="submit" disabled={props.globalProps.isLoading}>
+        Register
       </Button>
     </Form>
   );
 };
 
-export default Register;
+const globalState = (state) => ({globalProps : state})
+const globalDispatch = dispatch => ({
+    registerAPI : (data) => dispatch(registerUserAPI(data))
+})
+
+export default connect(globalState, globalDispatch)(Register);

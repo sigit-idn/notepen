@@ -1,4 +1,4 @@
-import firebase, {database} from "../../firebase";
+import firebase, { database } from "../../firebase";
 
 export const registerUserAPI = (data) => (dispatch) => {
   dispatch({ type: "CHANGE_ISLOADING", value: true });
@@ -41,11 +41,27 @@ export const loginUserAPI = (data) => (dispatch) =>
       .finally(() => dispatch({ type: "CHANGE_ISLOADING", value: false }));
   });
 
-
-export const addDataToAPI = ({userId, title, content, date}) => dispatch => {
-    database.ref('notes/' + userId).push({
+export const addDataToAPI =
+  ({ userId, title, content, date }) =>
+  (dispatch) => {
+    database
+      .ref("notes/" + userId)
+      .push({
         title,
         content,
-        date
-    }).then(res => console.log(res)).catch(err => console.log(err))
-}
+        date,
+      })
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+  };
+
+export const getDataFromAPI = (userId) => (dispatch) =>
+  new Promise((resolve, reject) => {
+    const urlNotes = database.ref("notes/" + userId);
+    urlNotes.on("value", (snapshot) => {
+      const noteData = snapshot.val();
+      const noteIds = Object.keys(noteData);
+      const data = noteIds.map((noteId) => noteData[noteId]);
+      resolve(data);
+    });
+  });

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, Button, Form } from "react-bootstrap";
 import { connect } from "react-redux";
 import { useHistory } from "react-router";
@@ -16,15 +16,15 @@ const Login = (props) => {
     const response = await props.actionLogin(state).catch((err) => err);
 
     if (response) {
-      console.log(response);
       history.push("/");
       setState({ email: "", password: "" });
+      localStorage.setItem("user", JSON.stringify(response))
     }
-  };
+};
 
   return (
     <Form className="col-md-5" onSubmit={handleSubmit}>
-      <h1>Login Page {props.userName}</h1>
+      <h1>Login Page</h1>
       <Form.Group className="mb-3" controlId="formBasicEmail">
         <Form.Label>Email address</Form.Label>
         <Form.Control
@@ -64,7 +64,7 @@ const Login = (props) => {
 
 const globalState = (state) => ({
   popupProps: state.popup,
-  userName: state.user.email,
+  globalUser : state.user,
   notificationProps: state.notification,
   isLoadingProps: state.isLoading,
 });

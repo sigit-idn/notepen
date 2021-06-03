@@ -1,26 +1,34 @@
-import { useState } from "react";
-import { Form, Button, Card } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Form, Button, Card, Row } from "react-bootstrap";
 import { connect } from "react-redux";
-import { addDataToAPI } from "../../../config/redux/action";
+import { addDataToAPI, getDataFromAPI } from "../../../config/redux/action";
 
 const Dashboard = (props) => {
+  const userData = JSON.parse(localStorage.getItem("user"));
   const [state, setState] = useState({
-    userId: props.globalUser.uid,
+    userId: userData.uid,
     title: "",
     content: "",
     date: new Date().getTime(),
   });
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    props.getData(userData.uid).then((data) => setPosts(data));
+  }, []);
+
   const changeHandler = (event) =>
     setState({ ...state, [event.target.id]: event.target.value });
 
-    const postDataHandler = (event) => {
+  console.log(posts);
+  const postDataHandler = (event) => {
     event.preventDefault();
     props.postData(state);
   };
   return (
     <div>
       <h2>Dashboard Page</h2>
-      <p>{props.globalUser.email}</p>
+      <p>{userData.email}</p>
       <Form className="mb-3" onSubmit={postDataHandler}>
         <Form.Group className="mb-3">
           <Form.Label>Title</Form.Label>
@@ -44,21 +52,21 @@ const Dashboard = (props) => {
       </Form>
 
       <hr />
-
-      <Card style={{ width: "18rem" }}>
-        <Card.Body>
-          <Card.Title>Card Title</Card.Title>
-          <Card.Subtitle className="mb-2 text-muted">
-            Card Subtitle
-          </Card.Subtitle>
-          <Card.Text>
-            Some quick example text to build on the card title and make up the
-            bulk of the card's content.
-          </Card.Text>
-          <Card.Link href="#">Card Link</Card.Link>
-          <Card.Link href="#">Another Link</Card.Link>
-        </Card.Body>
-      </Card>
+      <Row>
+        {posts.map((post) => (
+          <Card style={{ width: "18rem" }} className="mr-3">
+            <Card.Body>
+              <Card.Title>{post.title}</Card.Title>
+              <Card.Subtitle className="mb-2 text-muted">
+                {new Date(post.date).toLocaleString()}
+              </Card.Subtitle>
+              <Card.Text>{post.content}</Card.Text>
+              <Card.Link href="#">Card Link</Card.Link>
+              <Card.Link href="#">Another Link</Card.Link>
+            </Card.Body>
+          </Card>
+        ))}
+      </Row>
     </div>
   );
 };
@@ -69,6 +77,7 @@ const globalState = (state) => ({
 
 const globalDispatch = (dispatch) => ({
   postData: (data) => dispatch(addDataToAPI(data)),
+  getData: (data) => dispatch(getDataFromAPI(data)),
 });
 
 export default connect(globalState, globalDispatch)(Dashboard);

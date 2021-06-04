@@ -11,16 +11,18 @@ const Dashboard = (props) => {
     content: "",
     date: new Date().getTime(),
   });
-  const [posts, setPosts] = useState([]);
+  const posts = props.globalNotes;
 
   useEffect(() => {
-    props.getData(userData.uid).then((data) => setPosts(data));
+      console.log("2");
+    props.getData(userData.uid)
   }, []);
+
+  console.log(posts);
 
   const changeHandler = (event) =>
     setState({ ...state, [event.target.id]: event.target.value });
 
-  console.log(posts);
   const postDataHandler = (event) => {
     event.preventDefault();
     props.postData(state);
@@ -54,7 +56,7 @@ const Dashboard = (props) => {
       <hr />
       <Row>
         {posts.map((post) => (
-          <Card style={{ width: "18rem" }} className="mr-3">
+          <Card style={{ width: "18rem" }} className="mr-3 mb-3">
             <Card.Body>
               <Card.Title>{post.title}</Card.Title>
               <Card.Subtitle className="mb-2 text-muted">
@@ -73,6 +75,7 @@ const Dashboard = (props) => {
 
 const globalState = (state) => ({
   globalUser: state.user,
+  globalNotes: state.notes,
 });
 
 const globalDispatch = (dispatch) => ({

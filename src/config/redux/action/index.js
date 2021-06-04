@@ -55,13 +55,12 @@ export const addDataToAPI =
       .catch((err) => console.log(err));
   };
 
-export const getDataFromAPI = (userId) => (dispatch) =>
-  new Promise((resolve, reject) => {
+export const getDataFromAPI = (userId) => (dispatch) =>{
     const urlNotes = database.ref("notes/" + userId);
     urlNotes.on("value", (snapshot) => {
       const noteData = snapshot.val();
       const noteIds = Object.keys(noteData);
       const data = noteIds.map((noteId) => noteData[noteId]);
-      resolve(data);
-    });
-  });
+      dispatch({type : "CHANGE_NOTES", value: data})
+    })
+};

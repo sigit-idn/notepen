@@ -3,7 +3,8 @@ const initialState = {
     isLogin: false,
     isLoading: false,
     notification: '',
-    user: {}
+    user: {},
+    notes: []
   };
   
   const reducer = (state = initialState, action) => {
@@ -21,6 +22,9 @@ const initialState = {
     }
     if (action.type === "CHANGE_NOTIFICATION") {
       return { ...state, notification: action.value };
+    }
+    if (action.type === "CHANGE_NOTES") {
+      return { ...state, notes: action.value };
     }
   
     return state;

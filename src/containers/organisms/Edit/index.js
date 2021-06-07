@@ -1,28 +1,30 @@
 import { Button, Modal } from "react-bootstrap";
 import { useState } from "react";
 import InputForm from "../InputForm";
+import { connect } from "react-redux";
+import { updateDataAPI } from "../../../config/redux/action";
 
 const Edit = (props) => {
   const [state, setState] = useState({
-    // userId: props.userData.uid,
-    title: "",
-    content: "",
+    id: props.data?.id,
+    title: props.data?.data?.title,
+    content: props.data?.data?.content,
     date: new Date().getTime(),
   });
 
-
-  const updateDataHandler = () => {}
+  const updateDataHandler = (event) => {
+    event.preventDefault();
+    props.updateAPI(state)
+  }
 
   return (
     <Modal {...props} size="lg" centered>
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
-          Modal heading
+          Edit Note
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <h4>Edit</h4>
-
         <InputForm
           currentValue={props.data}
           state={state}
@@ -31,10 +33,14 @@ const Edit = (props) => {
         />
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={props.onHide}>Close</Button>
+        <Button onClick={props.onHide} variant="secondary">Close</Button>
       </Modal.Footer>
     </Modal>
   );
 };
 
-export default Edit;
+const globalDispatch = (data) => dispatch => ({
+  updateAPI : data => dispatch(updateDataAPI(data))
+})
+
+export default connect(null, globalDispatch)(Edit);

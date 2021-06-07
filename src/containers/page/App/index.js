@@ -13,7 +13,7 @@ function App() {
       <Router>
         <Navbar bg="light" className="mb-3" expand="lg">
           <Container>
-            <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
+            <Navbar.Brand href="#home">CRUD-FIREBASE</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="me-auto">

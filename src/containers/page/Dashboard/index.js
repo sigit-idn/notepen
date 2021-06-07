@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Form, Button, Card, Row } from "react-bootstrap";
+import { Modal, Button, Card, Row } from "react-bootstrap";
 import { connect } from "react-redux";
-import { addDataToAPI, getDataFromAPI } from "../../../config/redux/action";
+import { addDataToAPI, getDataFromAPI, deleteDataAPI } from "../../../config/redux/action";
 import Edit from "../../organisms/Edit";
 import InputForm from "../../organisms/InputForm";
 
@@ -14,6 +14,7 @@ const Dashboard = (props) => {
     date: new Date().getTime(),
   });
   const [showEdit, setShowEdit] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [editData, setEditData] = useState('');
   const posts = props.globalNotes;
 
@@ -45,7 +46,7 @@ const Dashboard = (props) => {
                 </Card.Subtitle>
                 <Card.Text>{post.data.content}</Card.Text>
                 <Button onClick={() => setShowEdit(true) & setEditData(post)}>Edit</Button>
-                <Button variant="danger" className="ml-1">
+                <Button variant="danger" className="ml-1" onClick={() => setShowDeleteDialog(true) & setEditData(post)}>
                   Delete
                 </Button>
               </Card.Body>
@@ -57,6 +58,17 @@ const Dashboard = (props) => {
   onHide={() => setShowEdit(false)}
   data={editData}
 />
+
+<Modal centered show={showDeleteDialog}>
+  <Modal.Body>
+    <p>Are you sure to delete note ?</p>
+  </Modal.Body>
+
+  <Modal.Footer>
+    <Button variant="secondary" onClick={() => setShowDeleteDialog(false)}>Cancel</Button>
+    <Button variant="danger" onClick={event => event.preventDefault() & props.deleteData(editData) & setShowDeleteDialog(false)}>Delete</Button>
+  </Modal.Footer>
+</Modal>
     </div>
   );
 };
@@ -69,6 +81,7 @@ const globalState = (state) => ({
 const globalDispatch = (dispatch) => ({
   postData: (data) => dispatch(addDataToAPI(data)),
   getData: (data) => dispatch(getDataFromAPI(data)),
+  deleteData: data => dispatch(deleteDataAPI(data))
 });
 
 export default connect(globalState, globalDispatch)(Dashboard);

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Card, Button, Form } from "react-bootstrap";
 import { connect } from "react-redux";
 import { useHistory } from "react-router";
@@ -16,9 +16,9 @@ const Login = (props) => {
     const response = await props.actionLogin(state).catch((err) => err);
 
     if (response) {
+        localStorage.setItem("user", JSON.stringify(response))
       history.push("/");
       setState({ email: "", password: "" });
-      localStorage.setItem("user", JSON.stringify(response))
     }
 };
 

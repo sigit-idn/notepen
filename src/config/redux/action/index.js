@@ -55,39 +55,32 @@ export const addDataToAPI =
       .catch((err) => console.log(err));
   };
 
-export const getDataFromAPI = (userId) => (dispatch) =>{
-    const urlNotes = database.ref("notes/" + userId);
-    urlNotes.on("value", (snapshot) => {
-        const noteData = snapshot.val();
-        const data = 
-        Object.keys(noteData).map(key => ({
-            id : key,
-            data: noteData[key]
-        }))
-      dispatch({type : "CHANGE_NOTES", value: data})
-    })
+export const getDataFromAPI = (userId) => (dispatch) => {
+  const urlNotes = database.ref("notes/" + userId);
+  urlNotes.on("value", (snapshot) => {
+    const noteData = snapshot.val();
+    const data = Object.keys(noteData).map((key) => ({
+      id: key,
+      data: noteData[key],
+    }));
+    dispatch({ type: "CHANGE_NOTES", value: data });
+  });
 };
 
-export const updateDataAPI = userId => dispatch => {
-    function writeNewPost(uid, username, picture, title, body) {
-        // A post entry.
-        var postData = {
-          author: username,
-          uid: uid,
-          body: body,
-          title: title,
-          starCount: 0,
-          authorPic: picture
-        };
-      
-        // Get a key for a new Post.
-        var newPostKey = firebase.database().ref().child('posts').push().key;
-      
-        // Write the new post's data simultaneously in the posts list and the user's post list.
-        var updates = {};
-        updates['/posts/' + newPostKey] = postData;
-        updates['/user-posts/' + uid + '/' + newPostKey] = postData;
-      
-        return firebase.database().ref().update(updates);
-      }
-}
+export const updateDataAPI = (data) => (dispatch) => 
+new Promise((resolve, reject) => {
+    const urlNotes = database.ref(`notes/${JSON.parse(localStorage.user).uid}/${data.id}`);
+    urlNotes.set(data, (error) => {
+        if (error) {
+            reject(error)
+        } else {
+            resolve("Update Note Successfully")
+        }
+    })
+})
+
+export const deleteDataAPI = (data) => (dispatch) => 
+new Promise((resolve, reject) => {
+    const urlNotes = database.ref(`notes/${JSON.parse(localStorage.user).uid}/${data.id}`);
+    urlNotes.remove() 
+})

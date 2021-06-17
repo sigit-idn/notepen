@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { createStore } from "redux";
 // import firebase from './config/firebase';
 import App from "./containers/page/App";
 import "./index.css";

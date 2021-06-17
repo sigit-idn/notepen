@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, Button, Form } from "react-bootstrap";
 import { connect } from "react-redux";
 import { useHistory } from "react-router";
@@ -6,6 +6,7 @@ import { loginUserAPI } from "../../../config/redux/action";
 
 const Login = (props) => {
   const [state, setState] = useState({ email: "", password: "" });
+  useEffect(() => console.log(state.email))
 
   const handleChangeText = (event) =>
     setState({ ...state, [event.target.type]: event.target.value });
@@ -21,6 +22,8 @@ const Login = (props) => {
       setState({ email: "", password: "" });
     }
 };
+
+// document.dispatchEvent(new Event('change', {}))
 
   return (
     <Form className="col-md-5" onSubmit={handleSubmit}>
